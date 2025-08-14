@@ -82,8 +82,11 @@ namespace NetworkingPrototype
             }
 
             // Look
-            state.yaw = input.yaw;
-            state.pitch = input.pitch;
+            if (input.yaw != 0f && input.pitch != 0f) // why does this return zero sometimes?
+            {
+                state.yaw = input.yaw;
+                state.pitch = input.pitch;
+            }
             _rigidbody.rb.MoveRotation(Quaternion.AngleAxis(state.yaw, Vector3.up));
 
             // Spells
