@@ -20,6 +20,7 @@ namespace NetworkingPrototype
         protected override void LateAwake()
         {
             _rigidbody = GetComponent<PredictedRigidbody>();
+            _camera.gameObject.SetActive(isOwner);
         }
 
         protected override void UpdateInput(ref Input input)
