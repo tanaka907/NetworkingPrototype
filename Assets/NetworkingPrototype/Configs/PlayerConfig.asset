@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfd769cfa8d3405aa8071ebac49f1a10, type: 3}
+  m_Name: PlayerConfig
+  m_EditorClassIdentifier: 
+  walkSpeed: 4
+  sprintSpeed: 8
+  acceleration: 5
+  accelerationBoost: 8
+  airSlowdown: 0.3
+  lookSensitivity: 0.1
+  lookAcceleration: 18
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  groundCheckRadius: 0.3
+  groundCheckOffset: 0.15
+  jumpCooldown: 0.2
+  jumpVelocity: 400
+  spellCooldown: 0.5
+  projectileSpeed: 20
+  projectileOffsetY: 1.65
+  projectileOffsetZ: 0.5
+  projectilePrefab: {fileID: 6257169241211613985, guid: 954274b18188a6244a75b035399f3744, type: 3}
