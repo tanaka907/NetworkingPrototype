@@ -28,6 +28,6 @@ MonoBehaviour:
   jumpVelocity: 400
   spellCooldown: 0.5
   projectileSpeed: 20
-  projectileOffsetY: 1.65
+  projectileOffsetY: 1
   projectileOffsetZ: 0.5
-  projectilePrefab: {fileID: 6257169241211613985, guid: 954274b18188a6244a75b035399f3744, type: 3}
+  projectilePrefab: {fileID: 6257169241211613985, guid: 3550e6cf68c951540bb7dff5d831fd3c, type: 3}
