@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfd769cfa8d3405aa8071ebac49f1a10, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
-  lookMode: 0
+  lookMode: 2
   velocityMode: 1
   walkSpeed: 4
   sprintSpeed: 8
@@ -20,7 +20,8 @@ MonoBehaviour:
   acceleration: 30
   airSlowdown: 0.3
   lookSensitivity: 0.06
-  lookAcceleration: 18
+  lookAcceleration: 20
+  lookDecay: 18
   groundMask:
     serializedVersion: 2
     m_Bits: 64

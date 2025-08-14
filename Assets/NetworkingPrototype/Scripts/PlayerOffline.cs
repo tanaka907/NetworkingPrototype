@@ -40,11 +40,17 @@ namespace NetworkingPrototype
                 case PlayerConfig.LookMode.Instant:
                     _input.lookSpeed = mouseMovement;
                     break;
+                case PlayerConfig.LookMode.Linear:
+                    _input.lookSpeed = Vector2.MoveTowards(
+                        _input.lookSpeed, 
+                        mouseMovement, 
+                        _config.lookAcceleration * deltaTime);
+                    break;
                 case PlayerConfig.LookMode.Decay:
                     _input.lookSpeed = MathUtility.Decay(
                         _input.lookSpeed,
                         mouseMovement,
-                        _config.lookAcceleration,
+                        _config.lookDecay,
                         deltaTime);
                     break;
                 default:
@@ -93,8 +99,7 @@ namespace NetworkingPrototype
 
             var acceleration = _state.targetVelocity - _rigidbody.linearVelocity;
             acceleration.y = 0f;
-            // _rigidbody.AddForce(acceleration, ForceMode.VelocityChange);
-            _rigidbody.linearVelocity = _state.targetVelocity;
+            _rigidbody.AddForce(acceleration, ForceMode.VelocityChange);
         }
 
         public struct Input

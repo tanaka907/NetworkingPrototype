@@ -217,7 +217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fps: 30
-  vSync: 2
+  vSync: 1
 --- !u!1 &214933513
 GameObject:
   m_ObjectHideFlags: 0

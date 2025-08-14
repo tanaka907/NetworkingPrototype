@@ -8,6 +8,7 @@ namespace NetworkingPrototype
         public enum LookMode
         {
             Instant,
+            Linear,
             Decay
         }
         
@@ -32,6 +33,7 @@ namespace NetworkingPrototype
         [Header("Look")]
         public float lookSensitivity = 1f;
         public float lookAcceleration = 1f;
+        public float lookDecay = 1f;
 
         [Header("Jump")]
         public LayerMask groundMask;
