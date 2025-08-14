@@ -1147,7 +1147,7 @@ GameObject:
   - component: {fileID: 811464882}
   - component: {fileID: 811464881}
   m_Layer: 3
-  m_Name: Player_Offline
+  m_Name: FirstPersonController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1215,7 +1215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e8713011f064ca3851630369d6cabbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _config: {fileID: 11400000, guid: b01d0c9f07d66ab43b7f637cda11ec0b, type: 2}
+  _config: {fileID: 11400000, guid: f3533ce22a38d714b8a33748329cdd64, type: 2}
   _camera: {fileID: 688166007}
   _graphics: {fileID: 287759237}
 --- !u!4 &811464884

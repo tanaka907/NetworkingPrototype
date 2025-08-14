@@ -28,7 +28,7 @@ namespace NetworkingPrototype
             _lookSpeed = MathUtility.Decay(
                 _lookSpeed,
                 Mouse.current.delta.ReadValue() * _config.lookSensitivity,
-                _config.lookAcceleration,
+                _config.lookDecay,
                 Time.deltaTime);
 
             _pitch -= _lookSpeed.y;

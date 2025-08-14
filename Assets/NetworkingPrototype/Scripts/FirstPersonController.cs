@@ -1,13 +1,12 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace NetworkingPrototype
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class PlayerOffline : MonoBehaviour
+    public class FirstPersonController : MonoBehaviour
     {
-        [SerializeField] private PlayerConfig _config;
+        [SerializeField] private FirstPersonControllerConfig _config;
         [SerializeField] private Transform _camera;
         [SerializeField] private Transform _graphics;
 
@@ -33,29 +32,11 @@ namespace NetworkingPrototype
 
         private void ReadInput(float deltaTime)
         {
-            var mouseMovement = Mouse.current.delta.ReadValue() * _config.lookSensitivity;
-
-            switch (_config.lookMode)
-            {
-                case PlayerConfig.LookMode.Instant:
-                    _input.lookSpeed = mouseMovement;
-                    break;
-                case PlayerConfig.LookMode.Linear:
-                    _input.lookSpeed = Vector2.MoveTowards(
-                        _input.lookSpeed, 
-                        mouseMovement, 
-                        _config.lookAcceleration * deltaTime);
-                    break;
-                case PlayerConfig.LookMode.Decay:
-                    _input.lookSpeed = MathUtility.Decay(
-                        _input.lookSpeed,
-                        mouseMovement,
-                        _config.lookDecay,
-                        deltaTime);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            _input.lookSpeed = MathUtility.Decay(
+                _input.lookSpeed,
+                Mouse.current.delta.ReadValue() * _config.lookSensitivity,
+                _config.lookDecay,
+                deltaTime);
 
             _input.move = Vector2.zero;
             if (Keyboard.current.wKey.isPressed) _input.move.y += 1f;
@@ -80,26 +61,10 @@ namespace NetworkingPrototype
             var worldInput = _state.YawRotation() * new Vector3(_input.move.x, 0f, _input.move.y);
             var speed = _input.sprint ? _config.sprintSpeed : _config.walkSpeed;
             var targetVelocity = worldInput * speed;
-            switch (_config.velocityMode)
-            {
-                case PlayerConfig.VelocityMode.Instant:
-                    _state.targetVelocity = targetVelocity;
-                    break;
-                case PlayerConfig.VelocityMode.Linear:
-                    _state.targetVelocity = Vector3.MoveTowards(_state.targetVelocity, targetVelocity,
-                        _config.acceleration * deltaTime);
-                    break;
-                case PlayerConfig.VelocityMode.Decay:
-                    _state.targetVelocity = MathUtility.Decay(_state.targetVelocity, targetVelocity,
-                        _config.velocityDecay, deltaTime);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
+            _state.targetVelocity = MathUtility.Decay(_state.targetVelocity, targetVelocity, _config.velocityDecay, deltaTime);
             var acceleration = _state.targetVelocity - _rigidbody.linearVelocity;
             acceleration.y = 0f;
-            _rigidbody.AddForce(acceleration, ForceMode.VelocityChange);
+            _rigidbody.linearVelocity += acceleration;
         }
 
         public struct Input
