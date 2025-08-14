@@ -23,12 +23,8 @@ namespace NetworkingPrototype
             _camera.gameObject.SetActive(isOwner);
         }
 
-        protected override void UpdateInput(ref Input input)
+        protected override void Update()
         {
-            input.jump |= Keyboard.current.spaceKey.wasPressedThisFrame;
-            input.fire |= Mouse.current.leftButton.isPressed;
-            input.sprint |= Keyboard.current.leftShiftKey.isPressed;
-
             _lookSpeed = MathUtility.Decay(
                 _lookSpeed,
                 Mouse.current.delta.ReadValue() * _config.lookSensitivity,
@@ -38,6 +34,15 @@ namespace NetworkingPrototype
             _pitch -= _lookSpeed.y;
             _pitch = Mathf.Clamp(_pitch, -85f, 85f);
             _yaw += _lookSpeed.x;
+            
+            base.Update();
+        }
+
+        protected override void UpdateInput(ref Input input)
+        {
+            input.jump |= Keyboard.current.spaceKey.wasPressedThisFrame;
+            input.fire |= Mouse.current.leftButton.isPressed;
+            input.sprint |= Keyboard.current.leftShiftKey.isPressed;
         }
 
         protected override void SanitizeInput(ref Input input)
@@ -48,9 +53,13 @@ namespace NetworkingPrototype
 
         protected override void GetFinalInput(ref Input input)
         {
-            input.yaw = _yaw;
-            input.pitch = _pitch;
+            input.lookRotation = Quaternion.Euler(_pitch, _yaw, 0f);
             input.move = GetWorldMoveVector(Quaternion.AngleAxis(_yaw, Vector3.up));
+        }
+
+        protected override void ModifyExtrapolatedInput(ref Input input)
+        {
+            input.lookRotation = null;
         }
 
         protected override void Simulate(Input input, ref State state, float delta)
@@ -59,18 +68,18 @@ namespace NetworkingPrototype
             var grounded = IsGrounded();
             var moveSpeed = input.sprint ? _config.sprintSpeed : _config.walkSpeed;
             var wantedVelocity = input.move * moveSpeed;
-            var acceleration = wantedVelocity - _rigidbody.linearVelocity;
+            state.targetVelocity = MathUtility.Decay(state.targetVelocity, wantedVelocity, _config.velocityDecay, delta);
+            var acceleration = state.targetVelocity - _rigidbody.linearVelocity;
             acceleration.y = 0f;
-            acceleration = Vector3.ClampMagnitude(acceleration, _config.acceleration);
-            acceleration *= _config.accelerationBoost;
+            
             if (!grounded) acceleration *= _config.airSlowdown;
 
-            _rigidbody.AddForce(acceleration, ForceMode.Acceleration);
+            _rigidbody.AddForce(acceleration, ForceMode.VelocityChange);
 
             // Jump
             if (input.jump && grounded && state.jumpCooldown <= 0f)
             {
-                _rigidbody.AddForce(new Vector3(0f, _config.jumpVelocity, 0f), ForceMode.Impulse);
+                _rigidbody.AddForce(new Vector3(0f, _config.jumpVelocity, 0f), ForceMode.VelocityChange);
                 state.jumpCooldown = _config.jumpCooldown;
             }
             else if (state.jumpCooldown > 0f)
@@ -82,12 +91,8 @@ namespace NetworkingPrototype
             }
 
             // Look
-            if (input.yaw != 0f && input.pitch != 0f) // why does this return zero sometimes?
-            {
-                state.yaw = input.yaw;
-                state.pitch = input.pitch;
-            }
-            _rigidbody.rb.MoveRotation(Quaternion.AngleAxis(state.yaw, Vector3.up));
+            if (input.lookRotation.HasValue)
+                state.lookRotation = input.lookRotation.Value;
 
             // Spells
             if (input.fire && state.spellCooldown <= 0f)
@@ -106,18 +111,17 @@ namespace NetworkingPrototype
 
         protected override void UpdateView(State state, State? verified)
         {
-            _camera.localRotation = Quaternion.AngleAxis(state.pitch, Vector3.right);
+            _camera.localRotation = state.lookRotation;
         }
 
         private void SpawnProjectile(State state)
         {
-            var rot = Quaternion.Euler(state.pitch, state.yaw, 0f);
             var pos = transform.position +
                       new Vector3(0f, _config.projectileOffsetY, 0f) +
-                      rot * new Vector3(0f, 0f, _config.projectileOffsetZ);
+                      state.lookRotation * new Vector3(0f, 0f, _config.projectileOffsetZ);
             var projectileId = hierarchy.Create(_config.projectilePrefab, pos, transform.rotation);
             var rb = hierarchy.GetComponent<PredictedRigidbody>(projectileId);
-            rb.linearVelocity = rot * new Vector3(0f, 0f, _config.projectileSpeed);
+            rb.linearVelocity = state.lookRotation * new Vector3(0f, 0f, _config.projectileSpeed);
         }
 
         private Vector3 GetWorldMoveVector(Quaternion cameraRotation)
@@ -158,8 +162,7 @@ namespace NetworkingPrototype
 
         public struct Input : IPredictedData
         {
-            public float yaw;
-            public float pitch;
+            public Quaternion? lookRotation;
             public Vector3 move;
             public bool fire;
             public bool jump;
@@ -169,8 +172,7 @@ namespace NetworkingPrototype
 
             public override string ToString()
             {
-                return $"yaw: {yaw}\n" +
-                       $"pitch: {pitch}\n" +
+                return $"lookRotation: {lookRotation}\n" +
                        $"move: {move}\n" +
                        $"fire: {fire}\n" +
                        $"jump: {jump}\n" +
@@ -180,19 +182,19 @@ namespace NetworkingPrototype
 
         public struct State : IPredictedData<State>
         {
-            public float yaw;
-            public float pitch;
+            public Quaternion lookRotation;
             public float spellCooldown;
             public float jumpCooldown;
+            public Vector3 targetVelocity;
 
             public void Dispose() { }
 
             public override string ToString()
             {
-                return $"yaw: {yaw}\n" +
-                       $"pitch: {pitch}\n" +
+                return $"lookRotation: {lookRotation}\n" +
                        $"spellCooldown: {spellCooldown}\n" +
-                       $"jumpCooldown: {jumpCooldown}";
+                       $"jumpCooldown: {jumpCooldown}\n" +
+                       $"targetVelocity: {targetVelocity}";
             }
         }
     }

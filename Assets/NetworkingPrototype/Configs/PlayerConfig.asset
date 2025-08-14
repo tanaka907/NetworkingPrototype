@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfd769cfa8d3405aa8071ebac49f1a10, type: 3}
   m_Name: PlayerConfig
   m_EditorClassIdentifier: 
+  lookMode: 0
+  velocityMode: 1
   walkSpeed: 4
   sprintSpeed: 8
-  acceleration: 5
-  accelerationBoost: 8
+  velocityDecay: 14
+  acceleration: 30
   airSlowdown: 0.3
-  lookSensitivity: 0.1
+  lookSensitivity: 0.06
   lookAcceleration: 18
   groundMask:
     serializedVersion: 2
@@ -25,7 +27,7 @@ MonoBehaviour:
   groundCheckRadius: 0.3
   groundCheckOffset: 0.15
   jumpCooldown: 0.2
-  jumpVelocity: 400
+  jumpVelocity: 5
   spellCooldown: 0.5
   projectileSpeed: 20
   projectileOffsetY: 1

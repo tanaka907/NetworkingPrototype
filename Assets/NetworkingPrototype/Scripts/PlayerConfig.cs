@@ -5,11 +5,27 @@ namespace NetworkingPrototype
     [CreateAssetMenu(menuName = "Networking Prototype/Player Config", fileName = "PlayerConfig")]
     public class PlayerConfig : ScriptableObject
     {
+        public enum LookMode
+        {
+            Instant,
+            Decay
+        }
+        
+        public enum VelocityMode
+        {
+            Instant,
+            Linear,
+            Decay
+        }
+
+        public LookMode lookMode = LookMode.Decay;
+        public VelocityMode velocityMode = VelocityMode.Decay;
+        
         [Header("Movement")]
         public float walkSpeed = 4f;
         public float sprintSpeed = 8f;
-        public float acceleration = 30f;
-        public float accelerationBoost = 10f;
+        public float velocityDecay = 14f;
+        public float acceleration = 14f;
         [Range(0f, 1f)]
         public float airSlowdown = 0.1f;
 
