@@ -18,7 +18,7 @@ namespace NetworkingPrototype
         protected override void Simulate(ref State state, float delta)
         {
             state.lifetime -= delta;
-            
+
             if (state.lifetime <= 0f)
                 hierarchy.Delete(id.objectId);
         }
@@ -28,6 +28,11 @@ namespace NetworkingPrototype
             public float lifetime;
 
             public void Dispose() { }
+
+            public override string ToString()
+            {
+                return $"lifetime: {lifetime}";
+            }
         }
     }
 }
