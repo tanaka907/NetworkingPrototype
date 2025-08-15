@@ -1,4 +1,5 @@
 ﻿using PurrNet.Prediction;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,9 +14,12 @@ namespace NetworkingPrototype
         private PredictedRigidbody _rigidbody;
         private LocalState _local;
 
-        private void Awake()
+        protected override void LateAwake()
         {
+            base.LateAwake();
+            
             _rigidbody = GetComponent<PredictedRigidbody>();
+            _camera.GetComponent<CinemachineCamera>().enabled = isOwner;
         }
 
         protected override void UpdateInput(ref Input input)
