@@ -148,7 +148,7 @@ MonoBehaviour:
   projectile: {fileID: 6257169241211613985, guid: 3550e6cf68c951540bb7dff5d831fd3c, type: 3}
   shootCooldown: 0.2
   spawnOffset: {x: 0, y: 1, z: 0.7}
-  projectileInitialVelocity: 10
+  projectileInitialVelocity: 20
   drawGizmos: 1
 --- !u!136 &3011865977594150886
 CapsuleCollider:
