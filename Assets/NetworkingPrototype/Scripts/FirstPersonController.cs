@@ -8,7 +8,6 @@ namespace NetworkingPrototype
     {
         [SerializeField] private FirstPersonControllerConfig _config;
         [SerializeField] private Transform _camera;
-        [SerializeField] private Transform _graphics;
 
         private Rigidbody _rigidbody;
         private Input _input;
@@ -52,8 +51,7 @@ namespace NetworkingPrototype
             _state.pitch -= _input.lookSpeed.y;
             _state.pitch = Mathf.Clamp(_state.pitch, -85f, 85f);
             _state.yaw += _input.lookSpeed.x;
-            _graphics.localRotation = _state.YawRotation();
-            _camera.localRotation = _state.PitchRotation();
+            _camera.localRotation = _state.LookRotation();
         }
 
         private void Move(float deltaTime)

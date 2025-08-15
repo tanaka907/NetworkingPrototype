@@ -2,9 +2,9 @@
 
 namespace NetworkingPrototype
 {
-    public class HideCursor : MonoBehaviour
+    public class GameManager : MonoBehaviour
     {
-        public int fps = 60;
+        public int fps;
         public int vSync = 1;
 
         private void Start()
@@ -22,11 +22,11 @@ namespace NetworkingPrototype
 
         private void Update()
         {
-            // if (QualitySettings.vSyncCount != vSync)
-            //     QualitySettings.vSyncCount = vSync;
-            //
-            // if (Application.targetFrameRate != fps)
-            //     Application.targetFrameRate = fps;
+            if (QualitySettings.vSyncCount != vSync)
+                QualitySettings.vSyncCount = vSync;
+
+            if (Application.targetFrameRate != fps)
+                Application.targetFrameRate = fps;
         }
     }
 }
