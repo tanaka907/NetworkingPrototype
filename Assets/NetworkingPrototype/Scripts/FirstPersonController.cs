@@ -60,10 +60,9 @@ namespace NetworkingPrototype
         {
             var worldInput = _state.YawRotation() * new Vector3(_input.move.x, 0f, _input.move.y);
             var speed = _input.sprint ? _config.sprintSpeed : _config.walkSpeed;
-            var targetVelocity = worldInput * speed;
-            _state.targetVelocity = MathUtility.Decay(_state.targetVelocity, targetVelocity, _config.velocityDecay, deltaTime);
-            var acceleration = _state.targetVelocity - _rigidbody.linearVelocity;
-            acceleration.y = 0f;
+            var velocity = new Vector3(_rigidbody.linearVelocity.x, 0f, _rigidbody.linearVelocity.z);
+            var targetVelocity = MathUtility.Decay(velocity, worldInput * speed, _config.velocityDecay, deltaTime);
+            var acceleration = targetVelocity - velocity;
             _rigidbody.linearVelocity += acceleration;
         }
 
@@ -78,7 +77,6 @@ namespace NetworkingPrototype
         {
             public float yaw;
             public float pitch;
-            public Vector3 targetVelocity;
 
             public Quaternion YawRotation() => Quaternion.AngleAxis(yaw, Vector3.up);
             public Quaternion PitchRotation() => Quaternion.AngleAxis(pitch, Vector3.right);
