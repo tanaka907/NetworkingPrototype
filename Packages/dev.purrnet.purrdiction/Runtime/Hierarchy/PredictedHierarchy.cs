@@ -210,7 +210,7 @@ namespace PurrNet.Prediction
 
             if (pool.Put(details, go, predictionManager.localTick))
             {
-                go.SetActive(false);
+                // go.SetActive(false);
                 predictionManager.UnregisterInstance(go);
             }
             else
