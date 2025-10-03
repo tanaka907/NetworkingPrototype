@@ -168,6 +168,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3354993528260452000, guid: b31e26afb58499a4c9d3cc1e61ba6a75, type: 3}
       insertIndex: 1
       addedObject: {fileID: 9102649410644482772}
+    - targetCorrespondingSourceObject: {fileID: 3354993528260452000, guid: b31e26afb58499a4c9d3cc1e61ba6a75, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1449060316030438368}
   m_SourcePrefab: {fileID: 100100000, guid: b31e26afb58499a4c9d3cc1e61ba6a75, type: 3}
 --- !u!1 &83226104888339495 stripped
 GameObject:
@@ -188,6 +191,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Camera: {fileID: 9183910041276763251}
   m_Character: {fileID: 6289299821187041629}
+--- !u!114 &1449060316030438368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 83226104888339495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 955be1ca60ae43f19819f4db9944ecd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _repeatInputFactor: 0.4
+  _extrapolateInput: 0
+  m_Prefab: {fileID: 0}
+  m_ManaCost: 10
 --- !u!4 &4180105849313808092 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1561132214651698267, guid: b31e26afb58499a4c9d3cc1e61ba6a75, type: 3}
