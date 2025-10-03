@@ -9,6 +9,7 @@ namespace NetworkingPrototype
         void UpdateInput(ref Character.Input input);
     }
     
+    [RequireComponent(typeof(Stats))]
     [RequireComponent(typeof(PredictedRigidbody))]
     public class Character : PredictedIdentity<Character.Input, Character.State>
     {
@@ -17,6 +18,7 @@ namespace NetworkingPrototype
 
         public Config config => m_Config;
 
+        private Stats m_Stats;
         private PredictedRigidbody m_Rigidbody;
         private CharacterAnimator m_Animation;
         private CapsuleCollider m_CapsuleCollider;
@@ -26,6 +28,7 @@ namespace NetworkingPrototype
 
         protected override void LateAwake()
         {
+            m_Stats = GetComponent<Stats>();
             m_Rigidbody = GetComponent<PredictedRigidbody>();
             m_Animation = GetComponentInChildren<CharacterAnimator>();
             m_CapsuleCollider = GetComponent<CapsuleCollider>();
@@ -148,6 +151,8 @@ namespace NetworkingPrototype
                 speed = config.sprintSpeed;
                 acceleration = config.airAcceleration;
             }
+
+            speed *= m_Stats.Get(StatType.MoveSpeed).finalValue;
 
             if (input.moveDirectionNullable.HasValue)
             {

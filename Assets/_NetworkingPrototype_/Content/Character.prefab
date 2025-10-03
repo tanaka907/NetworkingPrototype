@@ -435,11 +435,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Stats:
   - type: 1
-    value: 200
-    regeneration: 0
+    value: 100
+    regeneration: 2
   - type: 2
-    value: 500
-    regeneration: 0
+    value: 100
+    regeneration: 2
   - type: 3
     value: 1
     regeneration: 0
