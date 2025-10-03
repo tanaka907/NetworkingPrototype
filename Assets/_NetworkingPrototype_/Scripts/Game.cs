@@ -12,9 +12,9 @@ namespace NetworkingPrototype
     public class Game : MonoBehaviour
     {
         public const int FONT_SIZE = 13;
-        public static float PADDING = 10f; 
-        public static float LABEL_HEIGHT = FONT_SIZE * 1.25f;
-        public static Color FONT_COLOR = Color.white;
+        public const float PADDING = 10f; 
+        public const float LABEL_HEIGHT = FONT_SIZE * 1.25f;
+        public static readonly Color FONT_COLOR = Color.white;
         
         private static GUIStyle s_LabelStyle;
         private static List<OnScreenLog> s_Logs;
