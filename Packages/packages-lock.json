@@ -1,5 +1,15 @@
 {
   "dependencies": {
+    "com.unity.animation.rigging": {
+      "version": "1.3.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.burst": "1.4.1",
+        "com.unity.test-framework": "1.1.24"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.bindings.openimageio": {
       "version": "1.0.0",
       "depth": 1,
@@ -11,7 +21,7 @@
     },
     "com.unity.burst": {
       "version": "1.8.21",
-      "depth": 2,
+      "depth": 1,
       "source": "registry",
       "dependencies": {
         "com.unity.mathematics": "1.2.1",
@@ -48,7 +58,7 @@
       "dependencies": {}
     },
     "com.unity.ide.rider": {
-      "version": "3.0.36",
+      "version": "3.0.38",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -105,7 +115,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.recorder": {
-      "version": "5.1.2",
+      "version": "5.1.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -234,10 +244,13 @@
       }
     },
     "dev.purrnet.purrdiction": {
-      "version": "file:dev.purrnet.purrdiction",
+      "version": "https://github.com/PurrNet/PurrDiction.git?path=/Assets/PurrDiction#dev",
       "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.mono-cecil": "1.11.4"
+      },
+      "hash": "e99e1d3a6bacc60afb6f62cb4c6483369f5799db"
     },
     "dev.purrnet.purrnet": {
       "version": "https://github.com/PurrNet/PurrNet.git?path=/Assets/PurrNet",
@@ -247,7 +260,7 @@
         "com.unity.nuget.mono-cecil": "1.11.4",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       },
-      "hash": "a22347cb6b9d4af587ed506f9a4eb9537df78ecc"
+      "hash": "356938b422801bfc91bcb18b577aa06c531a9a1d"
     },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
