@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PredictedPrefabs
   m_EditorClassIdentifier: 
   _autoGenerate: 1
-  _folder: {fileID: 102900000, guid: 00000000000000001000000000000000, type: 3}
+  _folder: {fileID: 102900000, guid: 8d46a4c604258a04fbca8ea18305af58, type: 3}
   _defaultPooling:
     usePooling: 0
     initialSize: 0
