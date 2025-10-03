@@ -48,7 +48,7 @@ namespace NetworkingPrototype
         {
             if (input.castRotation.HasValue)
             {
-                if (m_Stats.Get(StatType.Mana).finalValue < m_ManaCost)
+                if (m_Stats.Get(StatType.Mana).value < m_ManaCost)
                 {
                     m_OnCastFailed.Invoke();
                     return;
@@ -62,12 +62,12 @@ namespace NetworkingPrototype
         
         private void OnCastFailed()
         {
-            Game.Log($"{owner} failed cast");
+            Game.Log($"{owner} {tickModule.localTick} failed cast");
         }
 
         private void OnCastComplete()
         {
-            Game.Log($"{owner} completed cast");
+            Game.Log($"{owner} {tickModule.localTick} completed cast");
         }
         
         public struct Input : IPredictedData

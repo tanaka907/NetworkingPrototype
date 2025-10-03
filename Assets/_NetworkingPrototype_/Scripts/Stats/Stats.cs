@@ -11,10 +11,7 @@ namespace NetworkingPrototype
     public struct StatConfig
     {
         public StatType type;
-        [Tooltip("Starting value for the stat")]
         public float value;
-        [Tooltip("Regeneration per second")]
-        [Min(0f)]
         public float regeneration;
     }
 
@@ -30,30 +27,25 @@ namespace NetworkingPrototype
     public struct Stat
     {
         public bool regeneration;
-        public float baseValue;
-        public float maxValue;
         public float finalValue;
-        public float normalized => maxValue == 0f ? 0f : finalValue / maxValue;
+        public float maxValue;
+        public float normalized => maxValue == 0f ? 0f : value / maxValue;
 
-        public bool IsEmpty() => finalValue <= 0f;
-        public bool IsFull() => finalValue >= maxValue;
+        public float value
+        {
+            get => finalValue;
+            set => finalValue = Mathf.Clamp(value, 0f, maxValue);
+        }
+
+        public bool IsEmpty() => value <= 0f;
+        public bool IsFull() => value >= maxValue;
 
         public Stat(StatConfig config)
         {
             regeneration = config.regeneration > 0f;
-            baseValue = config.value;
-            maxValue = config.value;
             finalValue = config.value;
+            maxValue = config.value;
         }
-    }
-
-    public struct StatChangedEvent
-    {
-        public StatType type;
-        public float delta;
-        public float value;
-        public float max;
-        public float normalized;
     }
 
     public class Stats : PredictedIdentity<Stats.State>
@@ -61,8 +53,6 @@ namespace NetworkingPrototype
         [SerializeField] private StatConfig[] m_Stats = Array.Empty<StatConfig>();
 
         public StatConfig[] configs => m_Stats;
-
-        public PredictedEvent<StatChangedEvent> onStatChange;
 
         private GUIStyle m_LabelStyle;
 
@@ -74,11 +64,6 @@ namespace NetworkingPrototype
                 normal = { textColor = Game.FONT_COLOR },
                 alignment = TextAnchor.LowerLeft
             };
-        }
-
-        protected override void LateAwake()
-        {
-            onStatChange = new PredictedEvent<StatChangedEvent>(predictionManager, this);
         }
 
         protected override State GetInitialState()
@@ -105,42 +90,11 @@ namespace NetworkingPrototype
 
                     if (!stat.IsFull())
                     {
-                        stat.baseValue = Mathf.Clamp(stat.baseValue + configs[i].regeneration * delta, 0f, stat.maxValue);
-                        Reevaluate(ref stat);
-                        currentState.stats[configs[i].type] = stat;
+                        stat.value += configs[i].regeneration * delta;
+                        state.stats[configs[i].type] = stat;
                     }
                 }
             }
-        }
-
-        public void SetRegeneration(StatType type, bool regenerate)
-        {
-            Assert.IsTrue(predictionManager.isSimulating);
-
-            if (currentState.stats.TryGetValue(type, out var stat))
-            {
-                if (stat.regeneration == regenerate)
-                    return;
-
-                stat.regeneration = regenerate;
-                currentState.stats[type] = stat;
-            }
-        }
-
-        public void SetRegeneration(StatType type, float regeneration)
-        {
-            Assert.IsTrue(predictionManager.isSimulating);
-
-            for (var i = 0; i < configs.Length; i++)
-            {
-                if (configs[i].type == type)
-                {
-                    configs[i].regeneration = regeneration;
-                    break;
-                }
-            }
-
-            SetRegeneration(type, regeneration != 0f);
         }
 
         public Stat Get(StatType type)
@@ -159,60 +113,24 @@ namespace NetworkingPrototype
             return default;
         }
 
-        public void Set(StatType type, float value)
-        {
-            Assert.IsTrue(predictionManager.isSimulating);
-            Assert.IsTrue(value >= 0f);
-
-            if (currentState.stats.TryGetValue(type, out var stat))
-            {
-                stat.baseValue = value;
-                Reevaluate(ref stat);
-                currentState.stats[type] = stat;
-            }
-        }
-
         public float Change(StatType type, float value)
         {
             Assert.IsTrue(predictionManager.isSimulating);
 
             if (currentState.stats.TryGetValue(type, out var stat))
             {
-                var oldValue = stat.baseValue;
-                stat.baseValue = Mathf.Clamp(stat.baseValue + value, 0f, stat.maxValue);
-                var delta = stat.baseValue - oldValue;
-
-                if (delta == 0)
-                    return stat.finalValue;
-
-                Reevaluate(ref stat);
+                var oldValue = stat.value;
+                stat.value += value;
+                var delta = stat.value - oldValue;
+                
+                if (delta == 0) 
+                    return stat.value;
+                
                 currentState.stats[type] = stat;
-
-                onStatChange.Invoke(new StatChangedEvent
-                {
-                    type = type,
-                    delta = delta,
-                    value = stat.finalValue,
-                    max = stat.maxValue,
-                    normalized = stat.normalized
-                });
-
-                return stat.finalValue;
+                return stat.value;
             }
 
             return 0f;
-        }
-
-        public void ResetValues()
-        {
-            currentState.stats.Dispose();
-            currentState.stats = DisposableDictionary<StatType, Stat>.Create(m_Stats.ToDictionary(config => config.type, config => new Stat(config)));
-        }
-
-        private void Reevaluate(ref Stat stat)
-        {
-            stat.finalValue = stat.baseValue;
-            // Accumulate modifiers
         }
 
         private void OnGUI()
@@ -239,10 +157,13 @@ namespace NetworkingPrototype
 
                 if (!stats.isDisposed)
                 {
-                    s += "stats:\n";
-
+                    var isFirst = true;
                     foreach (var (type, stat) in stats)
-                        s += $"   {((StatType)type).ToString()}: {stat.finalValue}/{stat.maxValue}\n";
+                    {
+                        if (!isFirst) s += "\n";
+                        s += $"{type.ToString()}: {stat.value:0} / {stat.maxValue:0}";
+                        isFirst = false;
+                    }
                 }
                 else
                 {

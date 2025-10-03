@@ -435,7 +435,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Stats:
   - type: 1
-    value: 100
+    value: 200
     regeneration: 2
   - type: 2
     value: 100
@@ -444,8 +444,8 @@ MonoBehaviour:
     value: 1
     regeneration: 0
   - type: 4
-    value: 100
-    regeneration: 15
+    value: 50
+    regeneration: 10
 --- !u!114 &8710223055165750234
 MonoBehaviour:
   m_ObjectHideFlags: 0

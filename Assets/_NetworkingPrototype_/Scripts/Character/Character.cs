@@ -152,7 +152,7 @@ namespace NetworkingPrototype
                 acceleration = config.airAcceleration;
             }
 
-            speed *= m_Stats.Get(StatType.MoveSpeed).finalValue;
+            speed *= m_Stats.Get(StatType.MoveSpeed).value;
 
             if (input.moveDirectionNullable.HasValue)
             {
