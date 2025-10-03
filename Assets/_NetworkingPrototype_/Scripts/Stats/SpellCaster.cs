@@ -5,20 +5,20 @@ using UnityEngine.InputSystem;
 namespace NetworkingPrototype
 {
     [RequireComponent(typeof(Character))]
-    [RequireComponent(typeof(Stats))]
+    [RequireComponent(typeof(IStats))]
     public class SpellCaster : PredictedIdentity<SpellCaster.Input, SpellCaster.State>
     {
         [SerializeField] private float m_ManaCost = 10f;
 
         private Character m_Controller;
-        private Stats m_Stats;
+        private IStats m_Stats;
         private PredictedEvent m_OnCastFailed;
         private PredictedEvent m_OnCastComplete;
 
         protected override void LateAwake()
         {
             m_Controller = GetComponent<Character>();
-            m_Stats = GetComponent<Stats>();
+            m_Stats = GetComponent<IStats>();
 
             m_OnCastFailed = new PredictedEvent(predictionManager, this);
             m_OnCastComplete = new PredictedEvent(predictionManager, this);
