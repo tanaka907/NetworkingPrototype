@@ -58,11 +58,23 @@ namespace NetworkingPrototype
 
     public class Stats : PredictedIdentity<Stats.State>
     {
-        [SerializeField] private StatConfig[] _stats = Array.Empty<StatConfig>();
+        [SerializeField] private StatConfig[] m_Stats = Array.Empty<StatConfig>();
 
-        public StatConfig[] configs => _stats;
+        public StatConfig[] configs => m_Stats;
 
         public PredictedEvent<StatChangedEvent> onStatChange;
+
+        private GUIStyle m_LabelStyle;
+
+        private void Start()
+        {
+            m_LabelStyle = new GUIStyle
+            {
+                fontSize = Game.FONT_SIZE,
+                normal = { textColor = Game.FONT_COLOR },
+                alignment = TextAnchor.LowerLeft
+            };
+        }
 
         protected override void LateAwake()
         {
@@ -73,7 +85,7 @@ namespace NetworkingPrototype
         {
             return new State
             {
-                stats = DisposableDictionary<StatType, Stat>.Create(_stats.ToDictionary(
+                stats = DisposableDictionary<StatType, Stat>.Create(m_Stats.ToDictionary(
                     config => config.type,
                     config => new Stat(config))
                 )
@@ -194,13 +206,22 @@ namespace NetworkingPrototype
         public void ResetValues()
         {
             currentState.stats.Dispose();
-            currentState.stats = DisposableDictionary<StatType, Stat>.Create(_stats.ToDictionary(config => config.type, config => new Stat(config)));
+            currentState.stats = DisposableDictionary<StatType, Stat>.Create(m_Stats.ToDictionary(config => config.type, config => new Stat(config)));
         }
 
         private void Reevaluate(ref Stat stat)
         {
             stat.finalValue = stat.baseValue;
             // Accumulate modifiers
+        }
+
+        private void OnGUI()
+        {
+            if (!isOwner || viewState.stats.isDisposed)
+                return;
+
+            var rect = new Rect(Game.PADDING, Screen.height - Game.PADDING - 200f, 200f, 200f);
+            GUI.Label(rect, viewState.ToString(), m_LabelStyle);
         }
 
         public struct State : IPredictedData<State>

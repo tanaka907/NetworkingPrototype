@@ -11,10 +11,13 @@ namespace NetworkingPrototype
     
     public class Game : MonoBehaviour
     {
-        private const int FONT_SIZE = 13;
-
-        private static List<OnScreenLog> s_Logs;
+        public const int FONT_SIZE = 13;
+        public static float PADDING = 10f; 
+        public static float LABEL_HEIGHT = FONT_SIZE * 1.25f;
+        public static Color FONT_COLOR = Color.white;
+        
         private static GUIStyle s_LabelStyle;
+        private static List<OnScreenLog> s_Logs;
 
         private void Start()
         {
@@ -26,7 +29,7 @@ namespace NetworkingPrototype
             s_LabelStyle = new GUIStyle
             {
                 fontSize = FONT_SIZE,
-                normal = { textColor = Color.white },
+                normal = { textColor = FONT_COLOR },
                 alignment = TextAnchor.MiddleLeft
             };
         }
@@ -42,8 +45,7 @@ namespace NetworkingPrototype
 
         private void OnGUI()
         {
-            var lineHeight = FONT_SIZE * 1.25f;
-            var rect = new Rect(10f, 10f, 200f, lineHeight);
+            var rect = new Rect(PADDING, PADDING, 200f, LABEL_HEIGHT);
             var validLogTime = Time.realtimeSinceStartup - 3f;
             
             for (var i = 0; i < s_Logs.Count;)
@@ -55,7 +57,7 @@ namespace NetworkingPrototype
                 }
                 
                 GUI.Label(rect, s_Logs[i].message, s_LabelStyle);
-                rect.y += lineHeight;
+                rect.y += LABEL_HEIGHT;
                 i++;
             }
         }

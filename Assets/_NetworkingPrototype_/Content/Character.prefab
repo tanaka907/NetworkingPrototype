@@ -433,19 +433,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b240e8837254359b8c7c8a5b306be03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stats:
+  m_Stats:
   - type: 1
-    value: 100
+    value: 200
     regeneration: 0
   - type: 2
-    value: 100
+    value: 500
     regeneration: 0
   - type: 3
     value: 1
     regeneration: 0
   - type: 4
     value: 100
-    regeneration: 20
+    regeneration: 15
 --- !u!114 &8710223055165750234
 MonoBehaviour:
   m_ObjectHideFlags: 0
