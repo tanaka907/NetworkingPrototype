@@ -52,19 +52,14 @@ namespace NetworkingPrototype
         protected override void Simulate(Input input, ref State state, float delta)
         {
             if (state.jumpCooldown > 0f)
-            {
                 state.jumpCooldown -= delta;
-
-                if (state.jumpCooldown <= 0f)
-                    state.isJumping = false;
-            }
             
             if (input.lookDirection.HasValue) 
                 state.lookDirection = input.lookDirection.Value;
             
             var ray = new Ray(m_Rigidbody.position + new Vector3(0f, config.groundCheckOffset, 0f), Vector3.down);
 
-            if (Physics.SphereCast(ray, config.groundCheckRadius, out var hit, config.groundCheckDistance, config.groundMask))
+            if (Physics.SphereCast(ray, config.groundCheckRadius, out var hit, config.groundCheckDistance, config.groundMask) && state.jumpCooldown <= 0f)
             {
                 state.isGrounded = true;
             }
@@ -77,9 +72,13 @@ namespace NetworkingPrototype
             {
                 state.isGrounded = false;
                 state.isJumping = true;
-                state.jumpCooldown = 0.1f;
+                state.jumpCooldown = 0.2f;
                 var jumpForce = Mathf.Sqrt(config.jumpHeight * 2f * config.gravity);
                 m_Rigidbody.AddForce(new Vector3(0f, jumpForce, 0f), ForceMode.VelocityChange);
+            }
+            else
+            {
+                state.isJumping = false;
             }
             
             if (m_Rigidbody.linearVelocity.y > -53f)
