@@ -46,6 +46,6 @@ namespace NetworkingPrototype
     public interface IStats
     {
         Stat Get(StatType type);
-        float Change(StatType type, float value);
+        void Change(StatType type, float value);
     }
 }

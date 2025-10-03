@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 
 namespace NetworkingPrototype
 {
-    public class DictionaryStats : PredictedIdentity<DictionaryStats.State>
+    public class DictionaryStats : PredictedIdentity<DictionaryStats.State>, IStats
     {
         [SerializeField] private StatConfig[] m_Stats = Array.Empty<StatConfig>();
 
@@ -72,24 +72,15 @@ namespace NetworkingPrototype
             return default;
         }
 
-        public float Change(StatType type, float value)
+        public void Change(StatType type, float value)
         {
             Assert.IsTrue(predictionManager.isSimulating);
 
             if (currentState.stats.TryGetValue(type, out var stat))
             {
-                var oldValue = stat.value;
                 stat.value += value;
-                var delta = stat.value - oldValue;
-
-                if (delta == 0)
-                    return stat.value;
-
                 currentState.stats[type] = stat;
-                return stat.value;
             }
-
-            return 0f;
         }
 
         private void OnGUI()

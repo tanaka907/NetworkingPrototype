@@ -60,21 +60,12 @@ namespace NetworkingPrototype
                 : viewState.stats[(int)type];
         }
 
-        public float Change(StatType type, float value)
+        public void Change(StatType type, float value)
         {
             Assert.IsTrue(predictionManager.isSimulating);
-
             var stat = currentState.stats[(int)type];
-            
-            var oldValue = stat.value;
             stat.value += value;
-            var delta = stat.value - oldValue;
-                
-            if (delta == 0) 
-                return stat.value;
-            
             currentState.stats[(int)type] = stat;
-            return stat.value;
         }
 
         private void OnGUI()
