@@ -16,8 +16,8 @@ namespace NetworkingPrototype
         {
             m_LabelStyle = new GUIStyle
             {
-                fontSize = Game.FONT_SIZE,
-                normal = { textColor = Game.FONT_COLOR },
+                fontSize = Game.config.fontSize,
+                normal = { textColor = Game.config.fontColor },
                 alignment = TextAnchor.LowerLeft
             };
         }
@@ -86,7 +86,12 @@ namespace NetworkingPrototype
             if (!isOwner)
                 return;
 
-            var rect = new Rect(Game.PADDING, Screen.height - Game.PADDING - 200f, 200f, 200f);
+            var rect = new Rect(
+                Game.config.padding, 
+                Screen.height - Game.config.padding - Game.config.labelWidth, 
+                Game.config.labelWidth, 
+                Game.config.labelWidth);
+            
             GUI.Label(rect, viewState.ToString(), m_LabelStyle);
         }
 

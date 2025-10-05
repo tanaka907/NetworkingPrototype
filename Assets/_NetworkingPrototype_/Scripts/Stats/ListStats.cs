@@ -19,8 +19,8 @@ namespace NetworkingPrototype
         {
             m_LabelStyle = new GUIStyle
             {
-                fontSize = Game.FONT_SIZE,
-                normal = { textColor = Game.FONT_COLOR },
+                fontSize = Game.config.fontSize,
+                normal = { textColor = Game.config.fontColor },
                 alignment = TextAnchor.LowerLeft
             };
         }
@@ -64,8 +64,10 @@ namespace NetworkingPrototype
         {
             Assert.IsTrue(predictionManager.isSimulating);
             var stat = currentState.stats[(int)type];
+            var oldValue = stat.value;
             stat.value += value;
             currentState.stats[(int)type] = stat;
+            Game.Log($"{type.ToString()} {oldValue:0.##} -> {stat.value:0.##} [list] [index: {(int)type}] [count: {currentState.stats.Count}]");
         }
 
         private void OnGUI()
@@ -73,7 +75,12 @@ namespace NetworkingPrototype
             if (!isOwner || viewState.stats.isDisposed)
                 return;
 
-            var rect = new Rect(Game.PADDING, Screen.height - Game.PADDING - 200f, 200f, 200f);
+            var rect = new Rect(
+                Game.config.padding, 
+                Screen.height - Game.config.padding - Game.config.labelWidth, 
+                Game.config.labelWidth, 
+                Game.config.labelWidth);
+            
             GUI.Label(rect, viewState.ToString(), m_LabelStyle);
         }
 

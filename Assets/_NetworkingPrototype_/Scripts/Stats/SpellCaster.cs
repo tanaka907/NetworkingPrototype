@@ -8,6 +8,7 @@ namespace NetworkingPrototype
     [RequireComponent(typeof(IStats))]
     public class SpellCaster : PredictedIdentity<SpellCaster.Input, SpellCaster.State>
     {
+        [SerializeField] private bool m_Log;
         [SerializeField] private float m_ManaCost = 10f;
 
         private Character m_Controller;
@@ -62,12 +63,14 @@ namespace NetworkingPrototype
         
         private void OnCastFailed()
         {
-            Game.Log($"{owner} {tickModule.localTick} failed cast");
+            if (m_Log)
+                Game.Log($"{owner} {tickModule.localTick} failed cast");
         }
 
         private void OnCastComplete()
         {
-            Game.Log($"{owner} {tickModule.localTick} completed cast");
+            if (m_Log)
+                Game.Log($"{owner} {tickModule.localTick} completed cast");
         }
         
         public struct Input : IPredictedData
