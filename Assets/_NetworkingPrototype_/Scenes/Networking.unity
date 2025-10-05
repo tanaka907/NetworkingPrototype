@@ -216,6 +216,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fa219e1866440d0a755e22630f9129b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Config:
+    logMode: -1
+    onScreenLogLifetime: 3
+    fontSize: 13
+    padding: 10
+    labelWidth: 200
+    fontColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &214933513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1074,7 +1081,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a1392aa1bc3d3b4a9ef31b6e6d8d4b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 83226104888339495, guid: e3976f9931e19354f9c4d3322b00a2b9, type: 3}
+  _playerPrefab: {fileID: 83226104888339495, guid: fe659f9212325354d9718d1046bde898, type: 3}
   _destroyOnDisconnect: 0
   spawnPoints:
   - {fileID: 675035184}
