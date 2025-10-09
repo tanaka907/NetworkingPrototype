@@ -7,33 +7,33 @@ namespace NetworkingPrototype
 {
     public class Player : StatelessPredictedIdentity, ICharacterInputProvider
     {
-        [SerializeField] private CharacterCamera m_Camera;
-        [SerializeField] private Character m_Character;
+        [SerializeField] private CharacterCamera m_camera;
+        [SerializeField] private Character m_character;
 
         public override void OnViewOwnerChanged(PlayerID? oldOwner, PlayerID? newOwner)
         {
             if (isOwner)
             {
-                m_Camera.transform.parent = null;
-                m_Camera.gameObject.SetActive(true);
+                m_camera.transform.parent = null;
+                m_camera.gameObject.SetActive(true);
             }
             else
             {
-                m_Camera.transform.parent = transform;
-                m_Camera.gameObject.SetActive(false);
+                m_camera.transform.parent = transform;
+                m_camera.gameObject.SetActive(false);
             }
         }
 
         public void UpdateInput(ref Character.Input input)
         {
-            UpdateCameraInput(ref m_Camera.input);
-            m_Camera.UpdateLook(Time.deltaTime);
+            UpdateCameraInput(ref m_camera.input);
+            m_camera.UpdateLook(Time.deltaTime);
             UpdateCharacterInput(ref input);
         }
 
         private void LateUpdate()
         {
-            m_Camera.UpdateObstruction(Time.deltaTime);
+            m_camera.UpdateObstruction(Time.deltaTime);
         }
 
         private void UpdateCameraInput(ref CharacterCamera.Input input)
@@ -67,9 +67,9 @@ namespace NetworkingPrototype
                 input.holdSprint = keyboard.leftShiftKey.isPressed;
                 input.jump |= keyboard.spaceKey.wasPressedThisFrame;
 
-                input.lookDirection = m_Camera.state.LookRotation() * Vector3.forward;
-                input.moveDirection = m_Camera.state.YawRotation() * new Vector3(moveInput.x, 0f, moveInput.y);
-                input.moveDirectionNullable = m_Camera.state.YawRotation() * new Vector3(moveInput.x, 0f, moveInput.y);
+                input.lookDirection = m_camera.state.LookRotation() * Vector3.forward;
+                input.moveDirection = m_camera.state.YawRotation() * new Vector3(moveInput.x, 0f, moveInput.y);
+                input.moveDirectionNullable = m_camera.state.YawRotation() * new Vector3(moveInput.x, 0f, moveInput.y);
             }
         }
     }

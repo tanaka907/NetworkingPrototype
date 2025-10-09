@@ -33,21 +33,21 @@ namespace NetworkingPrototype
     {
         public static GameConfig config { get; private set; }
 
-        [SerializeField] private GameConfig m_Config = new();
+        [SerializeField] private GameConfig m_config = new();
         
-        private static GUIStyle s_LabelStyle;
-        private static List<OnScreenLog> s_Logs;
+        private static GUIStyle s_labelStyle;
+        private static List<OnScreenLog> s_logs;
 
         private void Awake()
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             
-            config = m_Config;
+            config = m_config;
             
-            s_Logs = new List<OnScreenLog>();
+            s_logs = new List<OnScreenLog>();
             
-            s_LabelStyle = new GUIStyle
+            s_labelStyle = new GUIStyle
             {
                 fontSize = config.fontSize,
                 normal = { textColor = config.fontColor },
@@ -60,8 +60,8 @@ namespace NetworkingPrototype
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
 
-            s_Logs = null;
-            s_LabelStyle = null;
+            s_logs = null;
+            s_labelStyle = null;
             config = null;
         }
 
@@ -70,15 +70,15 @@ namespace NetworkingPrototype
             var rect = new Rect(config.padding, config.padding, config.labelWidth, config.labelHeight);
             var validLogTime = Time.realtimeSinceStartup - config.onScreenLogLifetime;
             
-            for (var i = 0; i < s_Logs.Count;)
+            for (var i = 0; i < s_logs.Count;)
             {
-                if (s_Logs[i].logTime < validLogTime)
+                if (s_logs[i].logTime < validLogTime)
                 {
-                    s_Logs.RemoveAt(i);
+                    s_logs.RemoveAt(i);
                     continue;
                 }
                 
-                GUI.Label(rect, s_Logs[i].message, s_LabelStyle);
+                GUI.Label(rect, s_logs[i].message, s_labelStyle);
                 rect.y += config.labelHeight;
                 i++;
             }
@@ -88,7 +88,7 @@ namespace NetworkingPrototype
         {
             if ((config.logMode & LogModeFlags.OnScreen) != 0)
             {
-                s_Logs.Add(new OnScreenLog
+                s_logs.Add(new OnScreenLog
                 {
                     message = message,
                     logTime = Time.realtimeSinceStartup

@@ -8,30 +8,30 @@ namespace NetworkingPrototype
     [RequireComponent(typeof(IStats))]
     public class SpellCaster : PredictedIdentity<SpellCaster.Input, SpellCaster.State>
     {
-        [SerializeField] private bool m_Log;
-        [SerializeField] private float m_ManaCost = 10f;
+        [SerializeField] private bool m_log;
+        [SerializeField] private float m_manaCost = 10f;
 
-        private Character m_Controller;
-        private IStats m_Stats;
-        private PredictedEvent m_OnCastFailed;
-        private PredictedEvent m_OnCastComplete;
+        private Character m_controller;
+        private IStats m_stats;
+        private PredictedEvent m_onCastFailed;
+        private PredictedEvent m_onCastComplete;
 
         protected override void LateAwake()
         {
-            m_Controller = GetComponent<Character>();
-            m_Stats = GetComponent<IStats>();
+            m_controller = GetComponent<Character>();
+            m_stats = GetComponent<IStats>();
 
-            m_OnCastFailed = new PredictedEvent(predictionManager, this);
-            m_OnCastComplete = new PredictedEvent(predictionManager, this);
+            m_onCastFailed = new PredictedEvent(predictionManager, this);
+            m_onCastComplete = new PredictedEvent(predictionManager, this);
             
-            m_OnCastFailed.AddListener(OnCastFailed);
-            m_OnCastComplete.AddListener(OnCastComplete);
+            m_onCastFailed.AddListener(OnCastFailed);
+            m_onCastComplete.AddListener(OnCastComplete);
         }
 
         protected override void Destroyed()
         {
-            m_OnCastFailed.RemoveListener(OnCastFailed);
-            m_OnCastComplete.RemoveListener(OnCastComplete);
+            m_onCastFailed.RemoveListener(OnCastFailed);
+            m_onCastComplete.RemoveListener(OnCastComplete);
         }
 
         protected override void UpdateInput(ref Input input)
@@ -41,7 +41,7 @@ namespace NetworkingPrototype
             if (mouse != null)
             {
                 if (mouse.leftButton.wasPressedThisFrame)
-                    input.castRotation = m_Controller.currentState.lookDirection;
+                    input.castRotation = m_controller.currentState.lookDirection;
             }
         }
 
@@ -49,27 +49,27 @@ namespace NetworkingPrototype
         {
             if (input.castRotation.HasValue)
             {
-                if (m_Stats.Get(StatType.Mana).value < m_ManaCost)
+                if (m_stats.Get(StatType.Mana).value < m_manaCost)
                 {
-                    m_OnCastFailed.Invoke();
+                    m_onCastFailed.Invoke();
                     return;
                 }
                 
-                m_Stats.Change(StatType.Mana, -m_ManaCost);
+                m_stats.Change(StatType.Mana, -m_manaCost);
                 
-                m_OnCastComplete.Invoke();
+                m_onCastComplete.Invoke();
             }
         }
         
         private void OnCastFailed()
         {
-            if (m_Log)
+            if (m_log)
                 Game.Log($"{owner} {tickModule.localTick} failed cast");
         }
 
         private void OnCastComplete()
         {
-            if (m_Log)
+            if (m_log)
                 Game.Log($"{owner} {tickModule.localTick} completed cast");
         }
         

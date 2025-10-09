@@ -13,29 +13,29 @@ namespace NetworkingPrototype
     [RequireComponent(typeof(PredictedRigidbody))]
     public class Character : PredictedIdentity<Character.Input, Character.State>
     {
-        [SerializeField] private Transform m_Body;
-        [SerializeField] private Config m_Config;
+        [SerializeField] private Transform m_body;
+        [SerializeField] private Config m_config;
 
-        public Config config => m_Config;
+        public Config config => m_config;
 
-        private IStats m_Stats;
-        private PredictedRigidbody m_Rigidbody;
-        private CharacterAnimator m_Animation;
-        private CapsuleCollider m_CapsuleCollider;
-        private ICharacterInputProvider m_InputProvider;
-        private float m_RotationVelocity;
-        private State m_PreviousViewState;
+        private IStats m_stats;
+        private PredictedRigidbody m_rigidbody;
+        private CharacterAnimator m_animation;
+        private CapsuleCollider m_capsuleCollider;
+        private ICharacterInputProvider m_inputProvider;
+        private float m_rotationVelocity;
+        private State m_previousViewState;
 
         protected override void LateAwake()
         {
-            m_Stats = GetComponent<IStats>();
-            m_Rigidbody = GetComponent<PredictedRigidbody>();
-            m_Animation = GetComponentInChildren<CharacterAnimator>();
-            m_CapsuleCollider = GetComponent<CapsuleCollider>();
-            m_InputProvider = GetComponent<ICharacterInputProvider>();
+            m_stats = GetComponent<IStats>();
+            m_rigidbody = GetComponent<PredictedRigidbody>();
+            m_animation = GetComponentInChildren<CharacterAnimator>();
+            m_capsuleCollider = GetComponent<CapsuleCollider>();
+            m_inputProvider = GetComponent<ICharacterInputProvider>();
 
-            m_Rigidbody.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
-            m_Rigidbody.rigidbody.useGravity = false;
+            m_rigidbody.rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
+            m_rigidbody.rigidbody.useGravity = false;
             SetCapsuleHeight(config.normalCharacterHeight);
         }
 
@@ -43,13 +43,13 @@ namespace NetworkingPrototype
         {
             return new State
             {
-                lookDirection = m_Body.forward
+                lookDirection = m_body.forward
             };
         }
 
         protected override void UpdateInput(ref Input input)
         {
-            m_InputProvider.UpdateInput(ref input);
+            m_inputProvider.UpdateInput(ref input);
         }
 
         protected override void Simulate(Input input, ref State state, float delta)
@@ -60,7 +60,7 @@ namespace NetworkingPrototype
             if (input.lookDirection.HasValue) 
                 state.lookDirection = input.lookDirection.Value;
             
-            var ray = new Ray(m_Rigidbody.position + new Vector3(0f, config.groundCheckOffset, 0f), Vector3.down);
+            var ray = new Ray(m_rigidbody.position + new Vector3(0f, config.groundCheckOffset, 0f), Vector3.down);
 
             if (Physics.SphereCast(ray, config.groundCheckRadius, out var hit, config.groundCheckDistance, config.groundMask) && state.jumpCooldown <= 0f)
             {
@@ -77,15 +77,15 @@ namespace NetworkingPrototype
                 state.isJumping = true;
                 state.jumpCooldown = 0.2f;
                 var jumpForce = Mathf.Sqrt(config.jumpHeight * 2f * config.gravity);
-                m_Rigidbody.AddForce(new Vector3(0f, jumpForce, 0f), ForceMode.VelocityChange);
+                m_rigidbody.AddForce(new Vector3(0f, jumpForce, 0f), ForceMode.VelocityChange);
             }
             else
             {
                 state.isJumping = false;
             }
             
-            if (m_Rigidbody.linearVelocity.y > -53f)
-                m_Rigidbody.AddForce(new Vector3(0f, -config.gravity, 0f), ForceMode.Acceleration);
+            if (m_rigidbody.linearVelocity.y > -53f)
+                m_rigidbody.AddForce(new Vector3(0f, -config.gravity, 0f), ForceMode.Acceleration);
 
             if (state.isSprinting)
             {
@@ -152,7 +152,7 @@ namespace NetworkingPrototype
                 acceleration = config.airAcceleration;
             }
 
-            speed *= m_Stats.Get(StatType.MoveSpeed).value;
+            speed *= m_stats.Get(StatType.MoveSpeed).value;
 
             if (input.moveDirectionNullable.HasValue)
             {
@@ -161,15 +161,15 @@ namespace NetworkingPrototype
             }
             
             var targetVelocity = input.moveDirection * speed;
-            var horizontalVelocity = new Vector3(m_Rigidbody.linearVelocity.x, 0f, m_Rigidbody.linearVelocity.z);
+            var horizontalVelocity = new Vector3(m_rigidbody.linearVelocity.x, 0f, m_rigidbody.linearVelocity.z);
             var force = (targetVelocity - horizontalVelocity) * acceleration;
-            m_Rigidbody.AddForce(force, ForceMode.Acceleration);
+            m_rigidbody.AddForce(force, ForceMode.Acceleration);
         }
 
         protected override void UpdateView(State state, State? verified)
         {
-            UpdateView(state, m_PreviousViewState, verified);
-            m_PreviousViewState = state;
+            UpdateView(state, m_previousViewState, verified);
+            m_previousViewState = state;
         }
 
         private void UpdateView(State state, State previous, State? verified)
@@ -178,27 +178,27 @@ namespace NetworkingPrototype
             {
                 var inputDirection = state.moveDirection.normalized;
                 var targetBodyRotation = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg;
-                m_Body.localRotation = Quaternion.Euler(0f, Mathf.SmoothDampAngle(m_Body.eulerAngles.y, targetBodyRotation, ref m_RotationVelocity, config.rotationSmoothTime), 0f);
+                m_body.localRotation = Quaternion.Euler(0f, Mathf.SmoothDampAngle(m_body.eulerAngles.y, targetBodyRotation, ref m_rotationVelocity, config.rotationSmoothTime), 0f);
             }
 
             if (state.isGrounded != previous.isGrounded)
             {
-                if (state.isGrounded) m_Animation.OnLand();
-                m_Animation.SetIsGrounded(state.isGrounded);
+                if (state.isGrounded) m_animation.OnLand();
+                m_animation.SetIsGrounded(state.isGrounded);
             }
 
             if (state.isJumping != previous.isJumping)
             {
-                if (state.isJumping) m_Animation.OnJump();
+                if (state.isJumping) m_animation.OnJump();
             }
             
             if (state.isCrouching != previous.isCrouching)
             {
-                m_Animation.SetIsCrouching(state.isCrouching);
+                m_animation.SetIsCrouching(state.isCrouching);
             }
             
-            m_Animation.SetMoveVelocity(state.animationMoveVelocity);
-            m_Animation.SetLookAtDirection(state.lookDirection);
+            m_animation.SetMoveVelocity(state.animationMoveVelocity);
+            m_animation.SetLookAtDirection(state.lookDirection);
         }
 
         private void StartCrouch(ref State state)
@@ -224,9 +224,9 @@ namespace NetworkingPrototype
 
         private void SetCapsuleHeight(float height)
         {
-            m_CapsuleCollider.radius = config.characterRadius;
-            m_CapsuleCollider.center = new Vector3(0f, height / 2f, 0f);
-            m_CapsuleCollider.height = height;
+            m_capsuleCollider.radius = config.characterRadius;
+            m_capsuleCollider.center = new Vector3(0f, height / 2f, 0f);
+            m_capsuleCollider.height = height;
         }
 
         private void OnDrawGizmos()

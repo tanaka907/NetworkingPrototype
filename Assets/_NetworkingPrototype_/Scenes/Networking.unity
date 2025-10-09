@@ -216,7 +216,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fa219e1866440d0a755e22630f9129b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Config:
+  m_config:
     logMode: -1
     onScreenLogLifetime: 3
     fontSize: 13

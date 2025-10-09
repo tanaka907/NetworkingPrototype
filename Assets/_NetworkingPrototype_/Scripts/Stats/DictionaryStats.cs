@@ -9,15 +9,15 @@ namespace NetworkingPrototype
 {
     public class DictionaryStats : PredictedIdentity<DictionaryStats.State>, IStats
     {
-        [SerializeField] private StatConfig[] m_Stats = Array.Empty<StatConfig>();
+        [SerializeField] private StatConfig[] m_stats = Array.Empty<StatConfig>();
 
-        public StatConfig[] configs => m_Stats;
+        public StatConfig[] configs => m_stats;
 
-        private GUIStyle m_LabelStyle;
+        private GUIStyle m_labelStyle;
 
         private void Start()
         {
-            m_LabelStyle = new GUIStyle
+            m_labelStyle = new GUIStyle
             {
                 fontSize = Game.config.fontSize,
                 normal = { textColor = Game.config.fontColor },
@@ -29,7 +29,7 @@ namespace NetworkingPrototype
         {
             return new State
             {
-                stats = DisposableDictionary<StatType, Stat>.Create(m_Stats.ToDictionary(
+                stats = DisposableDictionary<StatType, Stat>.Create(m_stats.ToDictionary(
                     config => config.type,
                     config => new Stat(config))
                 )
@@ -96,7 +96,7 @@ namespace NetworkingPrototype
                 Game.config.labelWidth, 
                 Game.config.labelWidth);
             
-            GUI.Label(rect, viewState.ToString(), m_LabelStyle);
+            GUI.Label(rect, viewState.ToString(), m_labelStyle);
         }
 
         public struct State : IPredictedData<State>

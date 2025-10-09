@@ -5,19 +5,19 @@ namespace NetworkingPrototype
 {
     public class CharacterCamera : MonoBehaviour
     {
-        [SerializeField] private Transform m_Target;
-        [SerializeField] private Config m_Config = new();
+        [SerializeField] private Transform m_target;
+        [SerializeField] private Config m_config = new();
 
-        public ref Input input => ref m_Input;
-        public ref State state => ref m_State;
-        public Config config => m_Config;
+        public ref Input input => ref m_input;
+        public ref State state => ref m_state;
+        public Config config => m_config;
         
-        private Input m_Input;
-        private State m_State;
+        private Input m_input;
+        private State m_state;
 
         private void Awake()
         {
-            m_State = new State
+            m_state = new State
             {
                 zoom = config.defaultZoom,
                 targetZoom = config.defaultZoom,
@@ -27,9 +27,9 @@ namespace NetworkingPrototype
 
         public void SetTarget(Transform newTarget)
         {
-            m_Target = newTarget;
+            m_target = newTarget;
             
-            if (m_Target == null)
+            if (m_target == null)
                 return;
             
             state.pivot = GetTargetPivot();
@@ -38,7 +38,7 @@ namespace NetworkingPrototype
 
         public void UpdateLook(float deltaTime)
         {
-            if (m_Target == null) 
+            if (m_target == null) 
                 return;
 
             state.lookSpeed = MathUtility.Decay(state.lookSpeed, input.look, config.rotationDecay, deltaTime);
@@ -75,7 +75,7 @@ namespace NetworkingPrototype
 
         private Vector3 GetTargetPivot()
         {
-            return m_Target.position + state.YawRotation() * config.offset;
+            return m_target.position + state.YawRotation() * config.offset;
         }
 
         private void OnDrawGizmosSelected()
@@ -83,7 +83,7 @@ namespace NetworkingPrototype
             if (!Application.isPlaying)
                 return;
 
-            if (m_Target != null)
+            if (m_target != null)
             {
                 Gizmos.color = Color.gray;
                 Gizmos.DrawLine(GetTargetPivot(), state.pivot);
